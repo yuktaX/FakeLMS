@@ -2,7 +2,7 @@ import java.lang.*;
 import java.util.List;
 
 public interface StudentDAO {
-	public Student getStudentByKey(int rollNo); //to verify login
+	public boolean getStudentByKey(String id); //to verify login
 	public void EnrollForCourse(String Course_ID);
 	public void UnenrollForCourse(String Course_ID);
 	public void getTranscript();

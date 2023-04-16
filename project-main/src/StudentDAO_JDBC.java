@@ -13,26 +13,29 @@ public class StudentDAO_JDBC implements StudentDAO {
 	}
 
 	@Override
-	public Student getStudentByKey(int rollNo) {
-		Student s = new Student();
+	public boolean getStudentByKey(String id) {
+		//Student s = new Student();
 		String sql;
 		Statement stmt = null;
 		
 		try{
 			stmt = dbConnection.createStatement();
-			sql = "select rollno, name from student where rollno = " + rollNo;
+			sql = "select Student_ID from student where STUDENT_ID = " + id;
 			ResultSet rs = stmt.executeQuery(sql);
 																																																																																																																																																																																			
 			//STEP 5: Extract data from result set
 			while(rs.next()){
 				//Retrieve by column name
-				int rollno  = rs.getInt("rollno");
-				String name = rs.getString("name");
-				s.setRollno(rollno);
-				s.setName(name);
+				String studentid  = rs.getString("Student_ID");
+				if(studentid == null)
+					return false;
+				//String name = rs.getString("name");
+				//s.setStudentID(id);
+				//s.setName(name);
 				break;
 				// Add exception handling here if more than one row is returned
 			}
+			return true;
 		} catch (SQLException ex) {
 		    // handle any errors
 		    System.out.println("SQLException: " + ex.getMessage());
@@ -40,7 +43,8 @@ public class StudentDAO_JDBC implements StudentDAO {
 		    System.out.println("VendorError: " + ex.getErrorCode());
 		}
 		// Add exception handling when there is no matching record
-		return s;
+		//return true;
+		return false;
 	}
 
 	@Override
@@ -64,6 +68,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 	@Override
 	public void getEligibleCourses() {
 		// TODO Auto-generated method stub
+
 		throw new UnsupportedOperationException("Unimplemented method 'getEligibleCourses'");
 	}
 

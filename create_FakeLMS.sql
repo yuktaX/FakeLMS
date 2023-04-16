@@ -43,3 +43,9 @@ create table Performance(
     Attendance float,
     constraint pk_Performance PRIMARY KEY (Performance_ID)
 );
+
+create table TA(
+    Student_ID char(5),
+    Course_ID char(5),
+    constraint pk_TA PRIMARY KEY (Student_ID)
+)

@@ -2,6 +2,8 @@
 import java.sql.*;
 import java.util.Scanner;
 
+import javax.lang.model.util.ElementScanner6;
+
 public class DAO_Demo {
 	public static DAO_Factory daoFactory;
 	public static void main(String[] args) {
@@ -56,6 +58,25 @@ public class DAO_Demo {
 					{
 						System.out.println("Invalid login. Please try again\n");
 					}
+				}
+				if(userlogin == 2)
+				{
+					int choice;
+					System.out.println("Login Successful!\n What would you like to do?\n1)VAdd a course \n2)Add student performance \n3)View all students in a course");
+					choice = scanner.nextInt();
+					while(true)
+					{
+						if(choice == 1)
+						{
+						}
+						else if(choice == 2)
+						{
+						}
+						else if(choice == 3)
+						{
+						}
+						else  
+							break;
 				}
 			}
 			

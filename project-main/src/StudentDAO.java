@@ -7,6 +7,7 @@ public interface StudentDAO {
 	public void UnenrollForCourse(String Course_ID);
 	public void getTranscript();
 	public void getEligibleCourses();
+	public void viewMyCourses();
 	//public void addStudent(Student student);
 	//public void updateStudent(Student student);
 	//public void deleteStudent(Student student);

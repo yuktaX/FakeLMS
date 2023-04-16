@@ -46,6 +46,23 @@ public class StudentDAO_JDBC implements StudentDAO {
 		//return true;
 		return false;
 	}
+	@Override
+	public void getEligibleCourses() {
+		String sql;
+		Statement stmt = null;
+		try{
+			stmt = dbConnection.createStatement();
+			sql = "select CourseName from Course where STUDENT_ID = " + id;
+			ResultSet rs = stmt.executeQuery(sql);
+
+		}
+		catch(SQLException ex) {
+		    // handle any errors
+		    System.out.println("SQLException: " + ex.getMessage());
+		    System.out.println("SQLState: " + ex.getSQLState());
+		    System.out.println("VendorError: " + ex.getErrorCode());
+		}
+	}
 
 	@Override
 	public void EnrollForCourse(String Course_ID) {
@@ -65,11 +82,6 @@ public class StudentDAO_JDBC implements StudentDAO {
 		throw new UnsupportedOperationException("Unimplemented method 'getTranscript'");
 	}
 
-	@Override
-	public void getEligibleCourses() {
-		// TODO Auto-generated method stub
-
-		throw new UnsupportedOperationException("Unimplemented method 'getEligibleCourses'");
-	}
+	
 
 }

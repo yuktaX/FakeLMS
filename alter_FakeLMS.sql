@@ -1,14 +1,6 @@
--- ALTER TABLE Professor
--- ADD CONSTRAINT fk_reg_patientID 
--- FOREIGN KEY (patientID) REFERENCES Patient(patientID);
-
 ALTER TABLE Course
 ADD CONSTRAINT fk_course_professorID
 FOREIGN KEY (Professor_ID) REFERENCES Professor(Professor_ID);
-
--- ALTER TABLE Student
--- ADD CONSTRAINT fk_diagnostic_visitID
--- FOREIGN KEY (diagnosticTestID) REFERENCES Visit(visitID);
 
 ALTER TABLE Performance
 ADD CONSTRAINT fk_performance_studentID

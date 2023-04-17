@@ -1,7 +1,7 @@
 create table Professor(
     Professor_ID integer AUTO_INCREMENT,
     Name varchar(20),
-    Email varchar(30),
+    Email varchar(100),
     constraint pk_Professor PRIMARY KEY (Professor_ID)
 );
 
@@ -19,7 +19,7 @@ create table Course(
 create table Student(
     Student_ID int AUTO_INCREMENT,
     Name varchar(20),
-    Email varchar(20),
+    Email varchar(100),
     Branch varchar(3),
     CurrentSemester integer,
     Gender char(1),

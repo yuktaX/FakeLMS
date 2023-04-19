@@ -1,25 +1,25 @@
 create table Professor(
-    Professor_ID char(5),
+    Professor_ID integer AUTO_INCREMENT,
     Name varchar(20),
-    Email varchar(30),
+    Email varchar(100),
     constraint pk_Professor PRIMARY KEY (Professor_ID)
 );
 
 create table Course(
-    Course_ID char(5),
+    Course_ID integer AUTO_INCREMENT,
     CourseName varchar(20),
     SemOfferedIn integer,
     Credits integer,
     Type varchar(20),
     Branch varchar(3),
-    Professor_ID char(5),
+    Professor_ID integer,
     constraint pk_Course PRIMARY KEY (Course_ID)
 );
 
 create table Student(
-    Student_ID char(5),
+    Student_ID int AUTO_INCREMENT,
     Name varchar(20),
-    Email varchar(20),
+    Email varchar(100),
     Branch varchar(3),
     CurrentSemester integer,
     Gender char(1),
@@ -28,24 +28,24 @@ create table Student(
 );
 
 create table Enrollment(
-    Enrollment_ID char(5),
-    Course_ID char(5),
-    Student_ID char(5),
+    Enrollment_ID integer AUTO_INCREMENT,
+    Course_ID integer,
+    Student_ID integer,
     Type varchar(20),
     constraint pk_Enrollment PRIMARY KEY (Enrollment_ID)
 );
 
 create table Performance(
-    Performance_ID char(5),
-    Course_ID char(5),
-    Student_ID char(5),
+    Performance_ID integer AUTO_INCREMENT,
+    Course_ID integer,
+    Student_ID integer,
     Grade varchar(2),
     Attendance float,
     constraint pk_Performance PRIMARY KEY (Performance_ID)
 );
 
 create table TA(
-    Student_ID char(5),
-    Course_ID char(5),
+    Student_ID integer,
+    Course_ID integer,
     constraint pk_TA PRIMARY KEY (Student_ID)
 );

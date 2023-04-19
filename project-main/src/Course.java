@@ -1,4 +1,3 @@
-import java.lang.*;
 public class Course {
     int Course_ID;
     String CourseName;

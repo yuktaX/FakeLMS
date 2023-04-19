@@ -26,11 +26,12 @@ public class DAO_Demo
 					Student received = verifyStudentLogin(userID);
 					if(received != null)
 					{
+						System.out.println("\nLogin Successful!\n");
 						int choice = 0;
 						
 						while(choice != 6)
 						{
-							System.out.println("Login Successful!\n What would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)View Courses offered by a Professor \n5)View Grades/Transcript\n6)Logout");
+							System.out.println("\nWhat would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)View Courses offered by a Professor \n5)View Grades/Transcript\n6)Logout\n \nEnter choice: ");
 							choice = scanner.nextInt();
 							if(choice == 1)
 							{
@@ -52,8 +53,6 @@ public class DAO_Demo
 							{
 								usecase5(received);
 							}
-							else 
-								break;
 						}
 						
 					}
@@ -120,7 +119,6 @@ public class DAO_Demo
 			daoFactory.activateConnection();
 			StudentDAO sdao = daoFactory.getStudentDAO();
 			sdao.getEligibleCourses(s);
-			System.out.println("indemo--------------------");
 			}
 			catch(Exception e){
 				// End transaction boundary with failure

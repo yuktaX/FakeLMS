@@ -64,11 +64,11 @@ public class StudentDAO_JDBC implements StudentDAO {
 			sql = "select CourseName, Course_ID from Course where SemOfferedIn = " + s.getSem();
 			ResultSet rs = stmt.executeQuery(sql);
 
-			System.out.println("Your eligible courses are\n");
+			System.out.println("\n-----------Your eligible courses are------------\n");
 
 			while (rs.next()) {
 				System.out.println(
-						"Course Name = " + rs.getString("CourseName") + "Course_ID = " + rs.getString("Course_ID"));
+						"Course Name = " + rs.getString("CourseName") + " Course_ID = " + rs.getString("Course_ID"));
 			}
 
 		} catch (SQLException ex) {
@@ -78,8 +78,6 @@ public class StudentDAO_JDBC implements StudentDAO {
 			System.out.println("VendorError: " + ex.getErrorCode());
 			System.exit(1);
 		}
-
-		//return 0;
 	}
 
 	@Override
@@ -92,11 +90,11 @@ public class StudentDAO_JDBC implements StudentDAO {
 			sql = "select c.Course_ID, c.CourseName from Course c, Enrollment e where e.Course_ID=c.Course_ID and e.Student_ID=" + id;// enrollment query
 			ResultSet rs = stmt.executeQuery(sql);
 
-			System.out.println("Your courses are\n");
+			System.out.println("\n--------------------Your courses are------------------------\n");
 
 			while (rs.next()) {
 				System.out.println(
-						"Course Name = " + rs.getString("CourseName") + "Course_ID = " + rs.getString("Course_ID"));
+						"Course Name = " + rs.getString("CourseName") + " Course_ID = " + rs.getString("Course_ID"));
 			}
 
 		} catch (SQLException ex) {
@@ -115,20 +113,35 @@ public class StudentDAO_JDBC implements StudentDAO {
 		try{
 			preparedStatement = dbConnection.prepareStatement(sql);
 			Scanner scanner = new Scanner(System.in);
-			int Courseid;
-			String type;
-			System.out.println("Enter Course_ID:"); Courseid = scanner.nextInt();
-			//System.out.println("Enter Student_ID:"); studentid = scanner.nextInt();
-			System.out.println("Specify type (Core / Elective):");type = scanner.next();
-			scanner.close();
+			Course c = new Course();
+			
+			String coursename;
+			System.out.println("Enter Course Name:"); coursename = scanner.nextLine();
+			String sql_getcourse = "select * from Course where CourseName = '" + coursename + "'";			
+			Statement getcourseinfo;
+			getcourseinfo = dbConnection.createStatement();
+			ResultSet rs = getcourseinfo.executeQuery(sql_getcourse);
+			while(rs.next())
+			{
+				c.setCourseID(rs.getInt("Course_ID"));
+				c.setCourseName(rs.getString("CourseName"));
+				c.setSemOfferedIn(rs.getInt("SemOfferedIn"));
+				c.setCourseCredit(rs.getInt("Credits"));
+				c.setType(rs.getString("Type"));
+				c.setBranch(rs.getString("Branch"));
+				c.setCourseProfessor(rs.getInt("Professor_ID"));
+				
+			}
 
-			preparedStatement.setInt(1, Courseid);
+			//scanner.close();
+
+			preparedStatement.setInt(1, c.getCourseID());
 			preparedStatement.setInt(2, s.getStudentID());
-			preparedStatement.setString(3, type);
-			System.out.println(sql);
-			preparedStatement.executeUpdate(sql);
+			preparedStatement.setString(3, c.getType());
 
-			System.out.println("Succesfully enrolled for course ");
+			preparedStatement.executeUpdate();
+
+			System.out.println("\n-----------Succesfully enrolled for course------------\n");
 
 		}
 		catch(SQLException ex) {
@@ -175,7 +188,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 																													// query
 			ResultSet rs = stmt.executeQuery(sql);
 
-			System.out.println("Here is your transcript\n");
+			System.out.println("\n----------Here is your transcript-----------\n");
 
 			while (rs.next()) {
 				System.out.println(
@@ -195,22 +208,23 @@ public class StudentDAO_JDBC implements StudentDAO {
 	public void viewCoursesbyProf(Student s) {
 		String sql;
 		Statement stmt = null;
+		PreparedStatement preparedStatement = null;
 		try {
 			Scanner scanner = new Scanner(System.in);
 			System.out.println("Enter Professor name: ");
-			String name = scanner.nextLine().toLowerCase();
-			scanner.close();
+			String name = scanner.nextLine();
 			stmt = dbConnection.createStatement();
-			sql = "select c.Course_ID, c.CourseName from Course c, Professor p where c.Professor_ID = p.Professor_ID and p.Name ="
-					+ name;// enrollment query
+			sql = "select c.Course_ID, c.CourseName from Course c, Professor p where c.Professor_ID = p.Professor_ID and p.Name = ?";// enrollment query
+			preparedStatement = dbConnection.prepareStatement(sql);
+			preparedStatement.setString(1, name);
+			ResultSet rs1 = preparedStatement.executeQuery();
+			//ResultSet rs = stmt.executeQuery(sql);
 
-			ResultSet rs = stmt.executeQuery(sql);
+			System.out.println("\n-----------Courses offered by Prof." + name + "---------------\n");
 
-			System.out.println("Here is your transcript\n");
-
-			while (rs.next()) {
+			while (rs1.next()) {
 				System.out.println(
-						"Course Name = " + rs.getString("CourseName") + "Course_ID = " + rs.getString("Course_ID"));
+						"Course Name = " + rs1.getString("CourseName") + " ,Course_ID = " + rs1.getString("Course_ID"));
 			}
 
 		} catch (SQLException ex) {

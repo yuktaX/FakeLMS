@@ -13,8 +13,8 @@ public class StudentDAO_JDBC implements StudentDAO {
 	}
 
 	@Override
-	public boolean getStudentByKey(String id) {
-		//Student s = new Student();
+	public Student getStudentByKey(String id) {
+		Student s = new Student();
 		String sql;
 		Statement stmt = null;
 		
@@ -28,14 +28,23 @@ public class StudentDAO_JDBC implements StudentDAO {
 				//Retrieve by column name
 				String studentid  = rs.getString("Student_ID");
 				if(studentid == null)
-					return false;
-				//String name = rs.getString("name");
-				//s.setStudentID(id);
-				//s.setName(name);
-				break;
+					break;
+				String name = rs.getString("Name");
+				String email = rs.getString("Email");
+				String branch = rs.getString("Branch");
+				String gender = rs.getString("Gender");
+				Date dob = rs.getDate("DOB");
+				int sem = rs.getInt("CurrentSem");
+				s.setStudentID(studentid);
+				s.setName(name);
+				s.setDOB(dob);
+				s.setBranch(branch);
+				s.setEmail(email);
+				s.setCurrentSem(sem);
+				s.setGender(gender);
 				// Add exception handling here if more than one row is returned
 			}
-			return true;
+			return s;
 		} catch (SQLException ex) {
 		    // handle any errors
 		    System.out.println("SQLException: " + ex.getMessage());
@@ -44,15 +53,89 @@ public class StudentDAO_JDBC implements StudentDAO {
 		}
 		// Add exception handling when there is no matching record
 		//return true;
-		return false;
+		return s;
 	}
 	@Override
-	public void getEligibleCourses() {
+	public void getEligibleCourses(Student s) {
 		String sql;
 		Statement stmt = null;
 		try{
+			String id = s.getStudentID();
 			stmt = dbConnection.createStatement();
-			sql = "select CourseName from Course where STUDENT_ID = " + id;
+			sql = "select CourseName from Course where SemOffered = " + s.getSem();
+			ResultSet rs = stmt.executeQuery(sql);
+
+			System.out.println("Your eligible courses are\n");
+
+			while(rs.next())
+			{
+				System.out.println("Course Name = " + rs.getString("CourseName") + "Course_ID = " + rs.getString("Course_ID"));
+			}
+
+		}
+		catch(SQLException ex) {
+		    // handle any errors
+		    System.out.println("SQLException: " + ex.getMessage());
+		    System.out.println("SQLState: " + ex.getSQLState());
+		    System.out.println("VendorError: " + ex.getErrorCode());
+		}
+	}
+
+	@Override 
+	public void viewMyCourses(Student s)
+	{
+		String sql;
+		Statement stmt = null;
+		try{
+			String id = s.getStudentID();
+			stmt = dbConnection.createStatement();
+			sql = "select CourseName from Course where STUDENT_ID = " + id;//enrollment query
+			ResultSet rs = stmt.executeQuery(sql);
+
+			System.out.println("Your courses are\n");
+
+			while(rs.next())
+			{
+				System.out.println("Course Name = " + rs.getString("CourseName") + "Course_ID = " + rs.getString("Course_ID"));
+			}
+
+		}
+		catch(SQLException ex) {
+		    // handle any errors
+		    System.out.println("SQLException: " + ex.getMessage());
+		    System.out.println("SQLState: " + ex.getSQLState());
+		    System.out.println("VendorError: " + ex.getErrorCode());
+		}
+	}
+
+	@Override
+	public void EnrollForCourse(Student s) {
+		String sql;
+		Statement stmt = null;
+		try{
+			String id = s.getStudentID();
+			stmt = dbConnection.createStatement();
+			sql = "select CourseName from Course where STUDENT_ID = " + id;//enrollment query
+			ResultSet rs = stmt.executeQuery(sql);
+
+		}
+		catch(SQLException ex) {
+		    // handle any errors
+		    System.out.println("SQLException: " + ex.getMessage());
+		    System.out.println("SQLState: " + ex.getSQLState());
+		    System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
+	}
+
+	@Override
+	public void UnenrollForCourse(Student s) {
+		String sql;
+		Statement stmt = null;
+		try{
+			String id = s.getStudentID();
+			stmt = dbConnection.createStatement();
+			sql = "select CourseName from Course where STUDENT_ID = " + id;//enrollment query
 			ResultSet rs = stmt.executeQuery(sql);
 
 		}
@@ -65,22 +148,59 @@ public class StudentDAO_JDBC implements StudentDAO {
 	}
 
 	@Override
-	public void EnrollForCourse(String Course_ID) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'EnrollForCourse'");
+	public void getTranscript(Student s) {
+		String sql;
+		Statement stmt = null;
+		try{
+			String id = s.getStudentID();
+			stmt = dbConnection.createStatement();
+			sql = "select CourseName from Course where STUDENT_ID = " + id;//enrollment query
+			ResultSet rs = stmt.executeQuery(sql);
+
+			System.out.println("Here is your transcript\n");
+
+			while(rs.next())
+			{
+				System.out.println("Course Name = " + rs.getString("CourseName") + "Course_ID = " + rs.getString("Course_ID"));
+			}
+
+		}
+		catch(SQLException ex) {
+		    // handle any errors
+		    System.out.println("SQLException: " + ex.getMessage());
+		    System.out.println("SQLState: " + ex.getSQLState());
+		    System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
 	}
 
 	@Override
-	public void UnenrollForCourse(String Course_ID) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'UnenrollForCourse'");
+	public void viewCoursesbyProf(Student s)
+	{
+		String sql;
+		Statement stmt = null;
+		try{
+			String id = s.getStudentID();
+			stmt = dbConnection.createStatement();
+			sql = "select CourseName from Course where STUDENT_ID = " + id;//enrollment query
+			ResultSet rs = stmt.executeQuery(sql);
+
+			System.out.println("Here is your transcript\n");
+
+			while(rs.next())
+			{
+				System.out.println("Course Name = " + rs.getString("CourseName") + "Course_ID = " + rs.getString("Course_ID"));
+			}
+
+		}
+		catch(SQLException ex) {
+		    // handle any errors
+		    System.out.println("SQLException: " + ex.getMessage());
+		    System.out.println("SQLState: " + ex.getSQLState());
+		    System.out.println("VendorError: " + ex.getErrorCode());
+		}
 	}
 
-	@Override
-	public void getTranscript() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getTranscript'");
-	}
 
 	
 

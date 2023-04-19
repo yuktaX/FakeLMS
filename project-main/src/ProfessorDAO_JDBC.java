@@ -105,4 +105,33 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             System.out.println(e.getMessage());
         }
     }
+
+    @Override
+    public void getStudentsFromCourse()
+    {
+        String sql;
+		Statement stmt = null;
+		try{
+			Scanner scanner = new Scanner(System.in);
+            String courseName;
+            courseName = scanner.next();
+			stmt = dbConnection.createStatement();
+			sql = "select CourseName from Course where STUDENT_ID = " + id;//enrollment query
+			ResultSet rs = stmt.executeQuery(sql);
+
+			System.out.println("Here is your transcript\n");
+
+			while(rs.next())
+			{
+				System.out.println("Course Name = " + rs.getString("CourseName") + "Course_ID = " + rs.getString("Course_ID"));
+			}
+
+		}
+		catch(SQLException ex) {
+		    // handle any errors
+		    System.out.println("SQLException: " + ex.getMessage());
+		    System.out.println("SQLState: " + ex.getSQLState());
+		    System.out.println("VendorError: " + ex.getErrorCode());
+		}
+    }
 }

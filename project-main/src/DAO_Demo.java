@@ -1,10 +1,8 @@
 //STEP 1. Import required packages
-import java.sql.*;
 import java.util.Scanner;
 
-import javax.lang.model.util.ElementScanner6;
-
-public class DAO_Demo {
+public class DAO_Demo 
+{
 	public static DAO_Factory daoFactory;
 	public static void main(String[] args) {
 		try{
@@ -22,32 +20,33 @@ public class DAO_Demo {
 				{
 					System.out.println("Enter username(Student_ID): ");
 					userID = scanner.next();
-					if(verifyStudentLogin(userID))
+					Student received = verifyStudentLogin(userID);
+					if(received != null)
 					{
 						int choice;
-						System.out.println("Login Successful!\n What would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)View Courses offered by a Professor \n5)View Grades");
+						System.out.println("Login Successful!\n What would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)View Courses offered by a Professor \n5)View Grades/Transcript");
 						choice = scanner.nextInt();
 						while(true)
 						{
 							if(choice == 1)
 							{
-
+								usecase1(received);
 							}
 							else if(choice == 2)
 							{
-
+								usecase2(received);
 							}
 							else if(choice == 3)
 							{
-
+								usecase3(received);
 							}
 							else if(choice == 4)
 							{
-
+								usecase4(received);
 							}
 							else if(choice == 5)
 							{
-
+								usecase5(received);
 							}
 							else 
 								break;
@@ -68,6 +67,7 @@ public class DAO_Demo {
 					{
 						if(choice == 1)
 						{
+
 						}
 						else if(choice == 2)
 						{
@@ -77,20 +77,22 @@ public class DAO_Demo {
 						}
 						else  
 							break;
+					}
 				}
-			}
-			
-
-		
-
-		}catch(Exception e){
+			}catch(Exception e){
 				//Handle errors for Class.forName
 				e.printStackTrace();
+			}
+		}
+		catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
 		}
 	}
+
 	//end main
 
-	public static boolean verifyStudentLogin(String id)
+	public static Student verifyStudentLogin(String id)
 	{
 		try{
 		daoFactory.activateConnection();
@@ -102,7 +104,80 @@ public class DAO_Demo {
 			daoFactory.deactivateConnection( DAO_Factory.TXN_STATUS.ROLLBACK );
 			e.printStackTrace();
 		}
-		return false;
+		Student tmp = new Student();
+		return tmp;
 	}
+
+	public static void usecase1(Student s)
+	{
+		try{
+			daoFactory.activateConnection();
+			StudentDAO sdao = daoFactory.getStudentDAO();
+			return sdao.getEligibleCourses(s);
+			}
+			catch(Exception e){
+				// End transaction boundary with failure
+				daoFactory.deactivateConnection( DAO_Factory.TXN_STATUS.ROLLBACK );
+				e.printStackTrace();
+			}
+	}
+
+	public static void usecase2(Student s)
+	{
+		try{
+			daoFactory.activateConnection();
+			StudentDAO sdao = daoFactory.getStudentDAO();
+			return sdao.viewMyCourses(s);
+			}
+			catch(Exception e){
+				// End transaction boundary with failure
+				daoFactory.deactivateConnection( DAO_Factory.TXN_STATUS.ROLLBACK );
+				e.printStackTrace();
+			}
+	}
+
+	public static void usecase3(Student s)
+	{
+		try{
+			daoFactory.activateConnection();
+			StudentDAO sdao = daoFactory.getStudentDAO();
+			return sdao.EnrollForCourse(s);
+			}
+			catch(Exception e){
+				// End transaction boundary with failure
+				daoFactory.deactivateConnection( DAO_Factory.TXN_STATUS.ROLLBACK );
+				e.printStackTrace();
+			}
+	}
+
+	public static void usecase4(Student s)
+	{
+		try{
+			daoFactory.activateConnection();
+			StudentDAO sdao = daoFactory.getStudentDAO();
+			return sdao.viewCoursesbyProf(s);
+			}
+			catch(Exception e){
+				// End transaction boundary with failure
+				daoFactory.deactivateConnection( DAO_Factory.TXN_STATUS.ROLLBACK );
+				e.printStackTrace();
+			}
+	}
+	public static void usecase5(Student s)
+	{
+		try{
+			daoFactory.activateConnection();
+			StudentDAO sdao = daoFactory.getStudentDAO();
+			return sdao.getTranscript(s);
+			}
+			catch(Exception e){
+				// End transaction boundary with failure
+				daoFactory.deactivateConnection( DAO_Factory.TXN_STATUS.ROLLBACK );
+				e.printStackTrace();
+			}
+	}
+
+	
+
 }
 	

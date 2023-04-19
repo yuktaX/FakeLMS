@@ -5,6 +5,6 @@ public interface ProfessorDAO {
 
     public void addCourse();
 
-    public ArrayList<Student> getStudentsFromCourse();
+    public void getStudentsFromCourse();
 
 }

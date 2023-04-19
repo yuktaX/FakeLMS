@@ -9,13 +9,16 @@ public class DAO_Demo
 			daoFactory = new DAO_Factory();
 
 			int userlogin;
-			try (Scanner scanner = new Scanner(System.in)) {
+			
+			try
+			{
+				Scanner scanner = new Scanner(System.in);
 				System.out.println("*********WELCOME TO FakeLMS*********\n");
 				System.out.println("Whom would you like to log in as? \n 1) Student \n 2)Professor");
 				userlogin = scanner.nextInt();
 
 				String userID;
-
+				
 				if(userlogin == 1)
 				{
 					System.out.println("Enter username(Student_ID): ");
@@ -79,6 +82,8 @@ public class DAO_Demo
 							break;
 					}
 				}
+				scanner.close();
+
 			}catch(Exception e){
 				//Handle errors for Class.forName
 				e.printStackTrace();
@@ -113,7 +118,7 @@ public class DAO_Demo
 		try{
 			daoFactory.activateConnection();
 			StudentDAO sdao = daoFactory.getStudentDAO();
-			return sdao.getEligibleCourses(s);
+			sdao.getEligibleCourses(s);
 			}
 			catch(Exception e){
 				// End transaction boundary with failure
@@ -127,7 +132,7 @@ public class DAO_Demo
 		try{
 			daoFactory.activateConnection();
 			StudentDAO sdao = daoFactory.getStudentDAO();
-			return sdao.viewMyCourses(s);
+			sdao.viewMyCourses(s);
 			}
 			catch(Exception e){
 				// End transaction boundary with failure
@@ -141,7 +146,7 @@ public class DAO_Demo
 		try{
 			daoFactory.activateConnection();
 			StudentDAO sdao = daoFactory.getStudentDAO();
-			return sdao.EnrollForCourse(s);
+			sdao.EnrollForCourse(s);
 			}
 			catch(Exception e){
 				// End transaction boundary with failure
@@ -155,7 +160,7 @@ public class DAO_Demo
 		try{
 			daoFactory.activateConnection();
 			StudentDAO sdao = daoFactory.getStudentDAO();
-			return sdao.viewCoursesbyProf(s);
+			sdao.viewCoursesbyProf(s);
 			}
 			catch(Exception e){
 				// End transaction boundary with failure
@@ -168,7 +173,7 @@ public class DAO_Demo
 		try{
 			daoFactory.activateConnection();
 			StudentDAO sdao = daoFactory.getStudentDAO();
-			return sdao.getTranscript(s);
+			sdao.getTranscript(s);
 			}
 			catch(Exception e){
 				// End transaction boundary with failure

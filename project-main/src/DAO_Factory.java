@@ -1,4 +1,3 @@
-import java.lang.*;
 import java.sql.*;
 /*
 	Methods to be called in the following order:
@@ -11,8 +10,8 @@ public class DAO_Factory{
 
 	public enum TXN_STATUS { COMMIT, ROLLBACK };
 
-	static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";  
-	static final String DB_URL = "jdbc:mysql://localhost/daoproject";
+	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	static final String DB_URL = "jdbc:mysql://localhost:3306/fakelms?characterEncoding=utf8";
 	static final String USER = "root";
 	static final String PASS = "12345";
 	Connection dbconnection = null;
@@ -40,6 +39,7 @@ public class DAO_Factory{
 			dbconnection.setAutoCommit(false);
 			activeConnection = true;
 		} catch(ClassNotFoundException ex) {
+			System.out.println(ex);
 			System.out.println("Error: unable to load driver class!");
 			System.exit(1);
 		} catch (SQLException ex) {
@@ -47,6 +47,7 @@ public class DAO_Factory{
 		    System.out.println("SQLException: " + ex.getMessage());
 		    System.out.println("SQLState: " + ex.getSQLState());
 		    System.out.println("VendorError: " + ex.getErrorCode());
+			System.exit(1);
 		}
 	}
 	public StudentDAO getStudentDAO() throws Exception

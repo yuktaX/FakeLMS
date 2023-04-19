@@ -13,6 +13,43 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
     }
 
     @Override
+    public Professor getProfessorByKey(String id) {
+        Professor p = new Professor();
+        String sql;
+        Statement stmt = null;
+
+        try {
+            stmt = dbConnection.createStatement();
+            sql = "select * from Professor where Professor_ID = " + id;
+            ResultSet rs = stmt.executeQuery(sql);
+
+            // STEP 5: Extract data from result set
+            while (rs.next()) {
+                // Retrieve by column name
+                int professorid = rs.getInt("Professor_ID");
+                // if (studentid == null)
+                // break;
+                String name = rs.getString("Name");
+                String email = rs.getString("Email");
+                p.setProfessor_ID(professorid);
+                p.setName(name);
+                p.setEmail(email);
+                // Add exception handling here if more than one row is returned
+            }
+            return p;
+        } catch (SQLException ex) {
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            System.exit(1);
+        }
+        // Add exception handling when there is no matching record
+        // return true;
+        return p;
+    }
+
+    @Override
     public void addPerformance() {
         PreparedStatement preparedStatement = null;
         String sql;
@@ -122,11 +159,11 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
                     + courseName;// enrollment query
             ResultSet rs = stmt.executeQuery(sql);
 
-            System.out.println("Here is your transcript\n");
-
             while (rs.next()) {
                 System.out.println(
-                        "Course Name = " + rs.getString("CourseName") + "Course_ID = " + rs.getString("Course_ID"));
+                        "Student_ID = " + rs.getInt("Student_ID") + "StudentName = " + rs.getString("Name")
+                                + "CurrentSemester = " + rs.getInt("CurrentSemester") + "Branch = "
+                                + rs.getString("Branch"));
             }
 
         } catch (SQLException ex) {

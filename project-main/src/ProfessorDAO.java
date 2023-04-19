@@ -1,6 +1,6 @@
-import java.util.ArrayList;
-
 public interface ProfessorDAO {
+    public Professor getProfessorByKey(String id);
+
     public void addPerformance();
 
     public void addCourse(Professor p);

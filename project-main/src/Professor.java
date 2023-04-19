@@ -3,6 +3,9 @@ public class Professor {
 	Integer Professor_ID;
 	String Email;
 
+	public Professor() {
+	}
+
 	public Professor(String name, Integer id, String email) {
 		this.Name = name;
 		this.Professor_ID = id;

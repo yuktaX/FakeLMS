@@ -18,21 +18,21 @@ public class StudentDAO_JDBC implements StudentDAO {
 
 		try {
 			stmt = dbConnection.createStatement();
-			sql = "select Student_ID from student where STUDENT_ID = " + id;
+			sql = "select * from Student where STUDENT_ID = " + id;
 			ResultSet rs = stmt.executeQuery(sql);
 
 			// STEP 5: Extract data from result set
 			while (rs.next()) {
 				// Retrieve by column name
-				String studentid = rs.getString("Student_ID");
-				if (studentid == null)
-					break;
+				int studentid = rs.getInt("Student_ID");
+				//if (studentid == null)
+				//	break;
 				String name = rs.getString("Name");
 				String email = rs.getString("Email");
 				String branch = rs.getString("Branch");
 				String gender = rs.getString("Gender");
 				Date dob = rs.getDate("DOB");
-				int sem = rs.getInt("CurrentSem");
+				int sem = rs.getInt("CurrentSemester");
 				s.setStudentID(studentid);
 				s.setName(name);
 				s.setDOB(dob);
@@ -48,6 +48,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
+			System.exit(1);
 		}
 		// Add exception handling when there is no matching record
 		// return true;
@@ -60,7 +61,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 		Statement stmt = null;
 		try {
 			stmt = dbConnection.createStatement();
-			sql = "select CourseName from Course where SemOffered = " + s.getSem();
+			sql = "select CourseName, Course_ID from Course where SemOfferedIn = " + s.getSem();
 			ResultSet rs = stmt.executeQuery(sql);
 
 			System.out.println("Your eligible courses are\n");
@@ -75,7 +76,10 @@ public class StudentDAO_JDBC implements StudentDAO {
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
+			System.exit(1);
 		}
+
+		//return 0;
 	}
 
 	@Override
@@ -83,9 +87,9 @@ public class StudentDAO_JDBC implements StudentDAO {
 		String sql;
 		Statement stmt = null;
 		try {
-			String id = s.getStudentID();
+			int id = s.getStudentID();
 			stmt = dbConnection.createStatement();
-			sql = "select CourseName from Course where STUDENT_ID = " + id;// enrollment query
+			sql = "select c.Course_ID, c.CourseName from Course c, Enrollment e where e.Course_ID=c.Course_ID and e.Student_ID=" + id;// enrollment query
 			ResultSet rs = stmt.executeQuery(sql);
 
 			System.out.println("Your courses are\n");
@@ -106,20 +110,36 @@ public class StudentDAO_JDBC implements StudentDAO {
 	@Override
 	public void EnrollForCourse(Student s) {
 		String sql;
-		Statement stmt = null;
-		try {
-			String id = s.getStudentID();
-			stmt = dbConnection.createStatement();
-			sql = "select CourseName from Course where STUDENT_ID = " + id;// enrollment query
-			ResultSet rs = stmt.executeQuery(sql);
+		PreparedStatement preparedStatement = null;
+		sql = "insert into Enrollment(Course_ID, Student_ID, Type) values (?, ?, ?)";//enrollment query
+		try{
+			preparedStatement = dbConnection.prepareStatement(sql);
+			Scanner scanner = new Scanner(System.in);
+			int Courseid;
+			String type;
+			System.out.println("Enter Course_ID:"); Courseid = scanner.nextInt();
+			//System.out.println("Enter Student_ID:"); studentid = scanner.nextInt();
+			System.out.println("Specify type (Core / Elective):");type = scanner.next();
+			scanner.close();
 
-		} catch (SQLException ex) {
-			// handle any errors
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			preparedStatement.setInt(1, Courseid);
+			preparedStatement.setInt(2, s.getStudentID());
+			preparedStatement.setString(3, type);
+			System.out.println(sql);
+			preparedStatement.executeUpdate(sql);
+
+			System.out.println("Succesfully enrolled for course ");
+
 		}
-
+		catch(SQLException ex) {
+		    // handle any errors
+			System.out.println(ex);
+		    System.out.println("SQLException: " + ex.getMessage());
+		    System.out.println("SQLState: " + ex.getSQLState());
+		    System.out.println("VendorError: " + ex.getErrorCode());
+			System.exit(1);
+		}
+		
 	}
 
 	@Override
@@ -127,10 +147,14 @@ public class StudentDAO_JDBC implements StudentDAO {
 		String sql;
 		Statement stmt = null;
 		try {
-			String id = s.getStudentID();
+			Scanner scanner = new Scanner(System.in);
+			String coursename = scanner.next();
 			stmt = dbConnection.createStatement();
-			sql = "select CourseName from Course where STUDENT_ID = " + id;// enrollment query
+			sql = "delete e from Enrollment e inner join Course c on e.Course_ID=c.Course_ID and c.CourseName=" + coursename;// enrollment query
 			ResultSet rs = stmt.executeQuery(sql);
+			scanner.close();
+
+			System.out.println("Succesfully deleted " + coursename + "from your courses");
 
 		} catch (SQLException ex) {
 			// handle any errors
@@ -145,9 +169,9 @@ public class StudentDAO_JDBC implements StudentDAO {
 		String sql;
 		Statement stmt = null;
 		try {
-			String id = s.getStudentID();
+			int id = s.getStudentID();
 			stmt = dbConnection.createStatement();
-			sql = "select c.CourseName, p.Grade from Course c, Performance p where p.Course_ID = c.Course_ID" + id;// enrollment
+			sql = "select c.CourseName, p.Grade from Course c, Performance p where p.Course_ID = c.Course_ID and p.Student_ID =" + id;// enrollment
 																													// query
 			ResultSet rs = stmt.executeQuery(sql);
 

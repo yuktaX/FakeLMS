@@ -1,7 +1,7 @@
 import java.sql.Date;
 
 public class Student{
-	String Student_ID;
+	int Student_ID;
 	String Name;
 	String Email;
 	String Branch;
@@ -9,7 +9,7 @@ public class Student{
 	String Gender;
 	Date DOB;
 	public Student() { }
-	public Student(String id, String name, String email, String branch, int CurrentSem, String Gender, Date DOB)
+	public Student(int id, String name, String email, String branch, int CurrentSem, String Gender, Date DOB)
 	{
 		this.Student_ID = id;
 		this.Name = name;
@@ -27,11 +27,11 @@ public class Student{
 	{ 
 		this.Name = name; 
 	}
-	public String getStudentID() 
+	public int getStudentID() 
 	{ 
 		return Student_ID; 
 	}
-	public void setStudentID(String id)
+	public void setStudentID(int id)
 	{ 
 		this.Student_ID = id; 
 	}

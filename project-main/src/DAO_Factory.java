@@ -29,8 +29,8 @@ public class DAO_Factory{
 
 	public void activateConnection() throws Exception
 	{
-		if( activeConnection == true )
-			throw new Exception("Connection already active");
+		// if( activeConnection == true )
+		// 	throw new Exception("Connection already active");
 
 		System.out.println("Connecting to database...");
 		try{
@@ -82,6 +82,8 @@ public class DAO_Factory{
 			    System.out.println("SQLException: " + ex.getMessage());
 			    System.out.println("SQLState: " + ex.getSQLState());
 			    System.out.println("VendorError: " + ex.getErrorCode());
+				System.exit(1);
+
 			}
 		}
 	}

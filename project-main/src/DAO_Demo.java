@@ -9,12 +9,12 @@ public class DAO_Demo
 			daoFactory = new DAO_Factory();
 
 			int userlogin;
-			
+
 			try
 			{
 				Scanner scanner = new Scanner(System.in);
 				System.out.println("*********WELCOME TO FakeLMS*********\n");
-				System.out.println("Whom would you like to log in as? \n 1) Student \n 2)Professor");
+				System.out.println("Whom would you like to log in as? \n 1)Student \n 2)Professor");
 				userlogin = scanner.nextInt();
 
 				String userID;
@@ -26,11 +26,12 @@ public class DAO_Demo
 					Student received = verifyStudentLogin(userID);
 					if(received != null)
 					{
-						int choice;
-						System.out.println("Login Successful!\n What would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)View Courses offered by a Professor \n5)View Grades/Transcript");
-						choice = scanner.nextInt();
-						while(true)
+						int choice = 0;
+						
+						while(choice != 6)
 						{
+							System.out.println("Login Successful!\n What would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)View Courses offered by a Professor \n5)View Grades/Transcript\n6)Logout");
+							choice = scanner.nextInt();
 							if(choice == 1)
 							{
 								usecase1(received);
@@ -119,6 +120,7 @@ public class DAO_Demo
 			daoFactory.activateConnection();
 			StudentDAO sdao = daoFactory.getStudentDAO();
 			sdao.getEligibleCourses(s);
+			System.out.println("indemo--------------------");
 			}
 			catch(Exception e){
 				// End transaction boundary with failure

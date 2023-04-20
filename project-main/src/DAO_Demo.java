@@ -1,7 +1,6 @@
 
 //STEP 1. Import required packages
 import java.util.Scanner;
-import java.sql.*;
 
 public class DAO_Demo {
 	public static DAO_Factory daoFactory;

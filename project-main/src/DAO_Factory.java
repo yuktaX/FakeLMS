@@ -14,9 +14,9 @@ public class DAO_Factory {
 	};
 
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static final String DB_URL = "jdbc:mysql://localhost:3306/FakeLMS?characterEncoding=utf8";
+	static final String DB_URL = "jdbc:mysql://localhost:3306/fakelms?characterEncoding=utf8";
 	static final String USER = "root";
-	static final String PASS = "Test@123";
+	static final String PASS = "12345";
 	Connection dbconnection = null;
 
 	// You can add additional DAOs here as needed

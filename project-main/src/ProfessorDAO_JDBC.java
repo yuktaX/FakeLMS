@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.sql.*;
 
@@ -69,7 +67,7 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             System.out.println("Enter Attendance:");
             Float Attendance = scanner.nextFloat();
 
-            scanner.close();
+            //scanner.close();
 
             preparedStatement.setInt(1, Course_ID);
             preparedStatement.setInt(2, Student_ID);
@@ -117,7 +115,7 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
 
             Integer Professor_ID = p.getProfessortID();
 
-            scanner.close();
+            //scanner.close();
 
             preparedStatement.setString(1, CourseName);
             preparedStatement.setInt(2, SemOfferedIn);
@@ -152,17 +150,17 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             String courseName;
             System.out.println("Enter course name: ");
             courseName = scanner.nextLine().toLowerCase();
-            scanner.close();
+            //scanner.close();
 
             stmt = dbConnection.createStatement();
-            sql = "select s.Student_ID, s.Name, s.CurrentSemester, s.Branch from Student s, Enrollment e, Course c  where s.Student_ID=e.Student_ID and c.CourseName="
-                    + courseName;// enrollment query
+            sql = "select s.Student_ID, s.Name, s.CurrentSemester, s.Branch from Student s, Enrollment e, Course c  where s.Student_ID=e.Student_ID and c.CourseName= '"
+                    + courseName + "'";// enrollment query
             ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
                 System.out.println(
-                        "Student_ID = " + rs.getInt("Student_ID") + "StudentName = " + rs.getString("Name")
-                                + "CurrentSemester = " + rs.getInt("CurrentSemester") + "Branch = "
+                        "Student_ID = " + rs.getInt("Student_ID") + " ,StudentName = " + rs.getString("Name")
+                                + " ,CurrentSemester = " + rs.getInt("CurrentSemester") + " ,Branch = "
                                 + rs.getString("Branch"));
             }
 

@@ -91,7 +91,9 @@ public class DAO_Demo {
 		try {
 			daoFactory.activateConnection();
 			StudentDAO sdao = daoFactory.getStudentDAO();
-			return sdao.getStudentByKey(id);
+			Student s = sdao.getStudentByKey(id);
+			daoFactory.deactivateConnection(DAO_Factory.TXN_STATUS.ROLLBACK);
+			return s;
 		} catch (Exception e) {
 			// End transaction boundary with failure
 			daoFactory.deactivateConnection(DAO_Factory.TXN_STATUS.ROLLBACK);
@@ -105,7 +107,9 @@ public class DAO_Demo {
 		try {
 			daoFactory.activateConnection();
 			ProfessorDAO pdao = daoFactory.getProfessorDAO();
-			return pdao.getProfessorByKey(id);
+			Professor p = pdao.getProfessorByKey(id);
+			daoFactory.deactivateConnection(DAO_Factory.TXN_STATUS.ROLLBACK);
+			return p;
 		} catch (Exception e) {
 			// End transaction boundary with failure
 			daoFactory.deactivateConnection(DAO_Factory.TXN_STATUS.ROLLBACK);

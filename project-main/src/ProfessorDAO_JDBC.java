@@ -52,6 +52,10 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
         PreparedStatement preparedStatement = null;
         String sql;
         sql = "insert into Performance(Course_ID, Student_ID, Grade, Attendance) values (?,?,?,?)";
+        PreparedStatement errStatement1 = null;
+        String errSql1;
+        PreparedStatement delStatement1 = null;
+        String delSql1;
 
         try {
             preparedStatement = dbConnection.prepareStatement(sql);
@@ -67,17 +71,33 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             System.out.println("Enter Attendance:");
             Float Attendance = scanner.nextFloat();
 
-            //scanner.close();
+            // scanner.close();
+
+            errSql1 = "select Course_ID, Student_ID from Enrollment where Course_ID = ? and Student_ID = ?";
+            errStatement1 = dbConnection.prepareStatement(errSql1);
+            errStatement1.setInt(1, Course_ID);
+            errStatement1.setInt(2, Student_ID);
+            ResultSet rs = errStatement1.executeQuery();
 
             preparedStatement.setInt(1, Course_ID);
             preparedStatement.setInt(2, Student_ID);
             preparedStatement.setString(3, Grade);
             preparedStatement.setFloat(4, Attendance);
 
-            // execute insert SQL stetement
-            preparedStatement.executeUpdate();
+            delSql1 = "delete from Enrollment where Course_ID = ? and Student_ID = ?";
+            delStatement1 = dbConnection.prepareStatement(delSql1);
+            delStatement1.setInt(1, Course_ID);
+            delStatement1.setInt(2, Student_ID);
 
-            System.out.println("Performance of " + Student_ID + " added to the Performance table");
+            if (rs.next() == false) {
+                System.out.println(
+                        "The student with Student_ID " + Student_ID + " isn't enrolled to course " + Course_ID);
+            } else {
+                preparedStatement.executeUpdate();
+                System.out.println("Performance of " + Student_ID + " added to the Performance table");
+                delStatement1.executeUpdate();
+            }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -96,7 +116,8 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
         PreparedStatement preparedStatement = null;
         String sql;
         sql = "insert into Course(CourseName, SemOfferedIn, Credits, Type, Branch, Professor_ID) values (?,?,?,?,?,?)";
-
+        PreparedStatement errStatement1 = null;
+        String errSql1;
         try {
             preparedStatement = dbConnection.prepareStatement(sql);
 
@@ -115,7 +136,20 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
 
             Integer Professor_ID = p.getProfessortID();
 
-            //scanner.close();
+            errSql1 = "select CourseName from Course";
+            errStatement1 = dbConnection.prepareStatement(errSql1);
+            ResultSet rs = errStatement1.executeQuery();
+            int flag = 0;
+            while (rs.next()) {
+                String name = rs.getString("CourseName");
+                if (name.equals(CourseName)) {
+                    System.out.println("Unable to add course because it already exists.");
+                    flag = 1;
+                    break;
+                }
+            }
+
+            // scanner.close();
 
             preparedStatement.setString(1, CourseName);
             preparedStatement.setInt(2, SemOfferedIn);
@@ -125,9 +159,11 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             preparedStatement.setInt(6, Professor_ID);
 
             // execute insert SQL stetement
-            preparedStatement.executeUpdate();
+            if (flag == 0) {
+                preparedStatement.executeUpdate();
+                System.out.println("Course " + CourseName + " added to Course table");
+            }
 
-            System.out.println("Course " + CourseName + " added to Course table");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -150,7 +186,7 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             String courseName;
             System.out.println("Enter course name: ");
             courseName = scanner.nextLine().toLowerCase();
-            //scanner.close();
+            // scanner.close();
 
             stmt = dbConnection.createStatement();
             sql = "select s.Student_ID, s.Name, s.CurrentSemester, s.Branch from Student s, Enrollment e, Course c  where s.Student_ID=e.Student_ID and c.CourseName= '"

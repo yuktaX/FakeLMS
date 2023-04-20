@@ -61,14 +61,14 @@ public class StudentDAO_JDBC implements StudentDAO {
 		Statement stmt = null;
 		try {
 			stmt = dbConnection.createStatement();
-			sql = "select CourseName, Course_ID from Course where SemOfferedIn = " + s.getSem();
+			sql = "select CourseName, Course_ID from Course where SemOfferedIn = " + s.getSem() + " and (Branch = '" + s.getBranch() + "' or Branch is NULL)";
 			ResultSet rs = stmt.executeQuery(sql);
 
 			System.out.println("\n-----------Your eligible courses are------------\n");
 
 			while (rs.next()) {
 				System.out.println(
-						"Course Name = " + rs.getString("CourseName") + " Course_ID = " + rs.getString("Course_ID"));
+						"Course Name = " + rs.getString("CourseName") + " ,Course_ID = " + rs.getString("Course_ID"));
 			}
 
 		} catch (SQLException ex) {
@@ -87,14 +87,14 @@ public class StudentDAO_JDBC implements StudentDAO {
 		try {
 			int id = s.getStudentID();
 			stmt = dbConnection.createStatement();
-			sql = "select c.Course_ID, c.CourseName from Course c, Enrollment e where e.Course_ID=c.Course_ID and e.Student_ID=" + id;// enrollment query
+			sql = "select distinct c.Course_ID, c.CourseName from Course c, Enrollment e where e.Course_ID=c.Course_ID and e.Student_ID=" + id;// enrollment query
 			ResultSet rs = stmt.executeQuery(sql);
 
 			System.out.println("\n--------------------Your courses are------------------------\n");
 
 			while (rs.next()) {
 				System.out.println(
-						"Course Name = " + rs.getString("CourseName") + " Course_ID = " + rs.getString("Course_ID"));
+						"Course Name = " + rs.getString("CourseName") + " ,Course_ID = " + rs.getString("Course_ID"));
 			}
 
 		} catch (SQLException ex) {
@@ -107,41 +107,87 @@ public class StudentDAO_JDBC implements StudentDAO {
 
 	@Override
 	public void EnrollForCourse(Student s) {
-		String sql;
+		String sql, sql_valid;
+		Statement stmt = null;
 		PreparedStatement preparedStatement = null;
 		sql = "insert into Enrollment(Course_ID, Student_ID, Type) values (?, ?, ?)";//enrollment query
+		sql_valid = "select CourseName from Course where CourseName in ( select CourseName from Course where SemOfferedIn = " + s.getSem() + " and (Branch = '" + s.getBranch() + "' or Branch is NULL))";//names of all eligible courses
 		try{
 			preparedStatement = dbConnection.prepareStatement(sql);
+			stmt= dbConnection.createStatement();
 			Scanner scanner = new Scanner(System.in);
 			Course c = new Course();
 			
-			String coursename;
+			String coursename; int flg = 0;
 			System.out.println("Enter Course Name:"); coursename = scanner.nextLine();
-			String sql_getcourse = "select * from Course where CourseName = '" + coursename + "'";			
-			Statement getcourseinfo;
-			getcourseinfo = dbConnection.createStatement();
-			ResultSet rs = getcourseinfo.executeQuery(sql_getcourse);
-			while(rs.next())
+			ResultSet rs1 = stmt.executeQuery(sql_valid);
+			while(rs1.next())
 			{
-				c.setCourseID(rs.getInt("Course_ID"));
-				c.setCourseName(rs.getString("CourseName"));
-				c.setSemOfferedIn(rs.getInt("SemOfferedIn"));
-				c.setCourseCredit(rs.getInt("Credits"));
-				c.setType(rs.getString("Type"));
-				c.setBranch(rs.getString("Branch"));
-				c.setCourseProfessor(rs.getInt("Professor_ID"));
-				
+				if(rs1.getString("CourseName").equals(coursename))
+				{
+					flg = -1;
+					String sql_getcourse = "select * from Course where CourseName = '" + coursename + "'";			
+					Statement getcourseinfo;
+					getcourseinfo = dbConnection.createStatement();
+					ResultSet rs = getcourseinfo.executeQuery(sql_getcourse);
+					while(rs.next())
+					{
+						c.setCourseID(rs.getInt("Course_ID"));
+						c.setCourseName(rs.getString("CourseName"));
+						c.setSemOfferedIn(rs.getInt("SemOfferedIn"));
+						c.setCourseCredit(rs.getInt("Credits"));
+						c.setType(rs.getString("Type"));
+						c.setBranch(rs.getString("Branch"));
+						c.setCourseProfessor(rs.getInt("Professor_ID"));
+						
+					}
+
+					preparedStatement.setInt(1, c.getCourseID());
+					preparedStatement.setInt(2, s.getStudentID());
+					preparedStatement.setString(3, c.getType());
+
+					preparedStatement.executeUpdate();
+
+					System.out.println("\n-----------Succesfully enrolled for course------------\n");
+
+					break;
+
+				}
 			}
 
-			//scanner.close();
+			if(flg == 0)
+			{
+				System.out.println("You are not eligible for this course\n");
+			}
+			// if(flg == 0)
+			// {
+			// 	System.out.println("This course does not exist please try again\n");
+			// }
+			// String sql_getcourse = "select * from Course where CourseName = '" + coursename + "'";			
+			// Statement getcourseinfo;
+			// getcourseinfo = dbConnection.createStatement();
+			// ResultSet rs = getcourseinfo.executeQuery(sql_getcourse);
+			// while(rs.next())
+			// {
+			// 	c.setCourseID(rs.getInt("Course_ID"));
+			// 	c.setCourseName(rs.getString("CourseName"));
+			// 	c.setSemOfferedIn(rs.getInt("SemOfferedIn"));
+			// 	c.setCourseCredit(rs.getInt("Credits"));
+			// 	c.setType(rs.getString("Type"));
+			// 	c.setBranch(rs.getString("Branch"));
+			// 	c.setCourseProfessor(rs.getInt("Professor_ID"));
+				
+			// }
 
-			preparedStatement.setInt(1, c.getCourseID());
-			preparedStatement.setInt(2, s.getStudentID());
-			preparedStatement.setString(3, c.getType());
+			// //scanner.close();
 
-			preparedStatement.executeUpdate();
+			// preparedStatement.setInt(1, c.getCourseID());
+			// preparedStatement.setInt(2, s.getStudentID());
+			// preparedStatement.setString(3, c.getType());
 
-			System.out.println("\n-----------Succesfully enrolled for course------------\n");
+			// preparedStatement.executeUpdate();
+
+			// System.out.println("\n-----------Succesfully enrolled for course------------\n");
 
 		}
 		catch(SQLException ex) {

@@ -1,5 +1,8 @@
 import java.util.Scanner;
 import java.sql.*;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 public class StudentDAO_JDBC implements StudentDAO {
 	Connection dbConnection;
@@ -8,7 +11,18 @@ public class StudentDAO_JDBC implements StudentDAO {
 		// JDBC driver name and database URL
 		// Database credentials
 		dbConnection = dbconn;
+		dict.put("A", (float) 4);
+		dict.put("A-", (float) 3.7);
+		dict.put("B+", (float) 3.4);
+		dict.put("B", (float) 3);
+		dict.put("B-", (float) 2.7);
+		dict.put("C+", (float) 2.4);
+		dict.put("C", (float) 2);
+		dict.put("D", (float) 1);
+		dict.put("F", (float) 0);
 	}
+
+	Dictionary<String, Float> dict = new Hashtable<>();
 
 	@Override
 	public Student getStudentByKey(String id) {
@@ -210,6 +224,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 		Statement stmt = null;
 		try {
 			Scanner scanner = new Scanner(System.in);
+			System.out.println("Enter course name: ");
 			String coursename = scanner.next();
 			stmt = dbConnection.createStatement();
 			sql = "delete e from Enrollment e inner join Course c on e.Course_ID=c.Course_ID and c.CourseName="
@@ -234,17 +249,26 @@ public class StudentDAO_JDBC implements StudentDAO {
 		try {
 			int id = s.getStudentID();
 			stmt = dbConnection.createStatement();
-			sql = "select c.CourseName, p.Grade from Course c, Performance p where p.Course_ID = c.Course_ID and p.Student_ID ="
+			sql = "select c.CourseName, c.Credits, p.Grade from Course c, Performance p where p.Course_ID = c.Course_ID and p.Student_ID ="
 					+ id;// enrollment
 			// query
 			ResultSet rs = stmt.executeQuery(sql);
 
 			System.out.println("\n----------Here is your transcript-----------\n");
 
+			Integer totalCredits = 0;
+			Float gradePoints = (float) 0;
 			while (rs.next()) {
-				System.out.println(
-						"Course Name = " + rs.getString("CourseName") + " Grade = " + rs.getString("Grade"));
+				String CourseName = rs.getString("CourseName");
+				String Grade = rs.getString("Grade");
+				Integer Credits = rs.getInt("Credits");
+				System.out.println("Course Name = " + CourseName + " Grade = " + Grade);
+
+				totalCredits += Credits;
+				gradePoints += dict.get(Grade) * Credits;
 			}
+
+			System.out.println("Your CGPA is: " + (float) gradePoints / totalCredits);
 
 		} catch (SQLException ex) {
 			// handle any errors

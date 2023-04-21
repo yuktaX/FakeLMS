@@ -28,7 +28,7 @@ public class DAO_Demo {
 					pass = scanner.next();
 					Student received = verifyStudentLogin(Student_ID, pass);
 					if (received != null) {
-						System.out.println("\nLogin Successful!\n");
+						System.out.println("\nWelcome, " + received.getName() + "!\n");
 						int choice = 0;
 
 						while (choice != 7) {
@@ -61,7 +61,7 @@ public class DAO_Demo {
 					pass = scanner.next();
 					Professor received = verifyProfessorLogin(Professor_ID, pass);
 					if (received != null) {
-						System.out.println("\nLogin Successful!\n");
+						System.out.println("\nWelcome, Professor " + received.getName() + "!\n");
 						int choice = 0;
 
 						while (choice != 4) {

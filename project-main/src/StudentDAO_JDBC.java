@@ -175,38 +175,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 			if (flg == 0) {
 				System.out.println("You are not eligible for this course\n");
 			}
-			// if(flg == 0)
-			// {
-			// System.out.println("This course does not exist please try again\n");
-			// }
-			// String sql_getcourse = "select * from Course where CourseName = '" +
-			// coursename + "'";
-			// Statement getcourseinfo;
-			// getcourseinfo = dbConnection.createStatement();
-			// ResultSet rs = getcourseinfo.executeQuery(sql_getcourse);
-			// while(rs.next())
-			// {
-			// c.setCourseID(rs.getInt("Course_ID"));
-			// c.setCourseName(rs.getString("CourseName"));
-			// c.setSemOfferedIn(rs.getInt("SemOfferedIn"));
-			// c.setCourseCredit(rs.getInt("Credits"));
-			// c.setType(rs.getString("Type"));
-			// c.setBranch(rs.getString("Branch"));
-			// c.setCourseProfessor(rs.getInt("Professor_ID"));
-
-			// }
-
-			// //scanner.close();
-
-			// preparedStatement.setInt(1, c.getCourseID());
-			// preparedStatement.setInt(2, s.getStudentID());
-			// preparedStatement.setString(3, c.getType());
-
-			// preparedStatement.executeUpdate();
-
-			// System.out.println("\n-----------Succesfully enrolled for
-			// course------------\n");
-
+			
 		} catch (SQLException ex) {
 			// handle any errors
 			System.out.println(ex);
@@ -220,19 +189,35 @@ public class StudentDAO_JDBC implements StudentDAO {
 
 	@Override
 	public void UnenrollForCourse(Student s) {
-		String sql;
-		Statement stmt = null;
+		String sql, sql_valid;
+		int flg = 0;
+		PreparedStatement preparedStatement = null; Statement stmt_valid = null;
 		try {
 			Scanner scanner = new Scanner(System.in);
 			System.out.println("Enter course name: ");
 			String coursename = scanner.next();
-			stmt = dbConnection.createStatement();
-			sql = "delete e from Enrollment e inner join Course c on e.Course_ID=c.Course_ID and c.CourseName="
-					+ coursename;// enrollment query
-			ResultSet rs = stmt.executeQuery(sql);
-			scanner.close();
+			
+			stmt_valid = dbConnection.createStatement();
+			sql_valid = "select distinct c.CourseName from Course c, Enrollment e where e.Course_ID=c.Course_ID and e.Student_ID=" + s.getStudentID();
+			ResultSet rs1 = stmt_valid.executeQuery(sql_valid);
+			while(rs1.next())
+			{
+				if(rs1.getString("CourseName").equals(coursename))
+				{
+					flg = 1;
+					sql = "delete e from Enrollment e inner join Course c on e.Course_ID=c.Course_ID and c.CourseName='"+ coursename + "'";// enrollment query
+					preparedStatement = dbConnection.prepareStatement(sql);
+					preparedStatement.executeUpdate();
+					System.out.println("Succesfully deleted " + coursename + " from your courses");
+					break;
+				}
+			}
+			if (flg == 0)
+			{
+				System.out.println("You are not enrolled in this course.\n");
+			}
 
-			System.out.println("Succesfully deleted " + coursename + "from your courses");
+			
 
 		} catch (SQLException ex) {
 			// handle any errors
@@ -282,7 +267,6 @@ public class StudentDAO_JDBC implements StudentDAO {
 	@Override
 	public void viewCoursesbyProf(Student s) {
 		String sql;
-		// Statement stmt = null;
 		PreparedStatement preparedStatement = null;
 
 		String sql1;
@@ -325,6 +309,51 @@ public class StudentDAO_JDBC implements StudentDAO {
 			} else {
 				System.out.println("Given professor doesn't exist");
 			}
+
+		} catch (SQLException ex) {
+			// handle any errors
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+	}
+
+	@Override
+	public void ContactTA(Student s) {
+		String sql, coursename, sql_getTA;
+		Statement stmt = null;
+		PreparedStatement preparedStatement = null;
+		PreparedStatement preparedStatement1 = null;
+		try {
+			Scanner scanner = new Scanner(System.in);
+			coursename = scanner.next();
+			stmt = dbConnection.createStatement();
+			sql = "select distinct c.CourseName from Course c, Enrollment e where e.Course_ID=c.Course_ID and e.Student_ID=" + s.getStudentID();//only contact your course TA's
+
+			preparedStatement = dbConnection.prepareStatement(sql);
+			
+			int flag = 0;
+			ResultSet rs1 = preparedStatement.executeQuery();
+			while(rs1.next())
+			{
+				if(rs1.getString("CourseName").equals(coursename))
+				{
+					flag = 1;
+					sql_getTA = "select s.Name, s.Email from Student s, TA t, Course c where c.Course_ID = t.Course_ID and t.Student_ID = s.Student_ID and c.CourseName = ?";
+					preparedStatement1 = dbConnection.prepareStatement(sql_getTA);
+					preparedStatement1.setString(1, coursename);
+					ResultSet rs = preparedStatement1.executeQuery(sql_getTA);
+					System.out.println("--------------TA's for " + coursename + "-----------\n");
+					while(rs.next())
+					{
+						System.out.println("Name of TA: " + rs.getString("Name") + " ,Email: " + rs.getString("Email\n"));
+					}
+					break;
+				}
+			}
+			if(flag == 0)
+				System.out.println("This course does not exist.\n");
+
 
 		} catch (SQLException ex) {
 			// handle any errors

@@ -27,9 +27,9 @@ public class DAO_Demo {
 						System.out.println("\nLogin Successful!\n");
 						int choice = 0;
 
-						while (choice != 7) {
+						while (choice != 8) {
 							System.out.println(
-									"\nWhat would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)Unenroll from a course \n5)View Courses offered by a Professor \n6)View Grades/Transcript \n7)Logout\n \nEnter choice: ");
+									"\nWhat would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)Unenroll from a course \n5)View Courses offered by a Professor \n6)View Grades/Transcript \n7)Contact TA for a Course 8)Logout\n \nEnter choice: ");
 							choice = scanner.nextInt();
 							if (choice == 1) {
 								usecase1(received);
@@ -43,6 +43,8 @@ public class DAO_Demo {
 								usecase4(received);
 							} else if (choice == 6) {
 								usecase5(received);
+							} else if (choice == 7) {
+								usecase10(received);
 							}
 						}
 

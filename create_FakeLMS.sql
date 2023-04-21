@@ -7,7 +7,7 @@ create table Professor(
 
 create table Course(
     Course_ID integer AUTO_INCREMENT,
-    CourseName varchar(20),
+    CourseName varchar(100),
     SemOfferedIn integer,
     Credits integer,
     Type varchar(20),

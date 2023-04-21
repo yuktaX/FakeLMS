@@ -11,30 +11,42 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
     }
 
     @Override
-    public Professor getProfessorByKey(String id) {
+    public Professor loginProfessor(Integer id, String password) {
         Professor p = new Professor();
         String sql;
         Statement stmt = null;
+        PreparedStatement loginStatement1 = null;
+        String loginSql1;
 
         try {
-            stmt = dbConnection.createStatement();
-            sql = "select * from Professor where Professor_ID = " + id;
-            ResultSet rs = stmt.executeQuery(sql);
+            loginSql1 = "select Professor_ID, Password from ProfessorLogin where Professor_ID = ? and Password = ?";
+            loginStatement1 = dbConnection.prepareStatement(loginSql1);
+            loginStatement1.setInt(1, id);
+            loginStatement1.setString(2, password);
+            ResultSet rs1 = loginStatement1.executeQuery();
+            if (rs1.next() == false) {
+                System.out.println("Login failed");
+                return null;
+            } else {
+                stmt = dbConnection.createStatement();
+                sql = "select * from Professor where Professor_ID = " + id;
+                ResultSet rs = stmt.executeQuery(sql);
 
-            // STEP 5: Extract data from result set
-            while (rs.next()) {
-                // Retrieve by column name
-                int professorid = rs.getInt("Professor_ID");
-                // if (studentid == null)
-                // break;
-                String name = rs.getString("Name");
-                String email = rs.getString("Email");
-                p.setProfessor_ID(professorid);
-                p.setName(name);
-                p.setEmail(email);
-                // Add exception handling here if more than one row is returned
+                // STEP 5: Extract data from result set
+                while (rs.next()) {
+                    // Retrieve by column name
+                    int professorid = rs.getInt("Professor_ID");
+                    // if (studentid == null)
+                    // break;
+                    String name = rs.getString("Name");
+                    String email = rs.getString("Email");
+                    p.setProfessor_ID(professorid);
+                    p.setName(name);
+                    p.setEmail(email);
+                    // Add exception handling here if more than one row is returned
+                }
+                return p;
             }
-            return p;
         } catch (SQLException ex) {
             // handle any errors
             System.out.println("SQLException: " + ex.getMessage());

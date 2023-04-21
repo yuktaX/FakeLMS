@@ -1,5 +1,5 @@
 public interface ProfessorDAO {
-    public Professor getProfessorByKey(String id);
+    public Professor loginProfessor(Integer id, String password);
 
     public void addPerformance();
 

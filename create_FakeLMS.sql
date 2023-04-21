@@ -7,7 +7,7 @@ create table Professor(
 
 create table Course(
     Course_ID integer AUTO_INCREMENT,
-    CourseName varchar(100),
+    CourseName varchar(30),
     SemOfferedIn integer,
     Credits integer,
     Type varchar(20),
@@ -31,7 +31,6 @@ create table Enrollment(
     Enrollment_ID integer AUTO_INCREMENT,
     Course_ID integer,
     Student_ID integer,
-    Type varchar(20),
     constraint pk_Enrollment PRIMARY KEY (Enrollment_ID)
 );
 
@@ -48,4 +47,18 @@ create table TA(
     Student_ID integer,
     Course_ID integer,
     constraint pk_TA PRIMARY KEY (Student_ID)
+);
+
+create table StudentLogin(
+    Login_ID integer AUTO_INCREMENT,
+    Student_ID integer,
+    Password varchar(30),
+    constraint pk_Slogin PRIMARY KEY (Login_ID)
+);
+
+create table ProfessorLogin(
+    Login_ID integer AUTO_INCREMENT,
+    Professor_ID integer,
+    Password varchar(30),
+    constraint pk_Plogin PRIMARY KEY (Login_ID)
 );

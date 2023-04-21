@@ -1,7 +1,11 @@
 insert into Professor(Name, Email) values
 ('yoda', 'greenboi@jedi.com'),
 ('obi Wan Kenobi', 'obi@jedi.com'),
-('anakin Skywalker', 'anakin@deathstar.com');
+('anakin Skywalker', 'anakin@deathstar.com'),
+('lord fartquad','lord@gmail.com'),
+('shrek','bigboyshrek@gmail.com'),
+('jolyne cujoh','jolyne@gmail.com'),
+('peppa pig','peppapig@pigmail.com');
 
 insert into Student(Name, Email, Branch, CurrentSemester, Gender, DOB)
 values ('ahsoka', 'ahsoka@jedi.com', 'CSE', 4, 'F', '2013-04-1'),

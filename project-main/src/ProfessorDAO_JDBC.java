@@ -60,12 +60,66 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
     }
 
     @Override
-    public void addPerformance() {
+    public void viewMyCourses(Professor p) {
+        String sql;
+        PreparedStatement preparedStatement = null;
+
+        String sql1;
+        PreparedStatement preparedStatement1 = null;
+        try {
+            Scanner scanner = new Scanner(System.in);
+            // stmt = dbConnection.createStatement();
+            sql = "select Course_ID, CourseName from Course where Professor_ID =?";// enrollment
+            sql1 = "select Name from Professor"; // query
+
+            preparedStatement = dbConnection.prepareStatement(sql);
+            preparedStatement1 = dbConnection.prepareStatement(sql1);
+
+            preparedStatement.setInt(1, p.getProfessortID());
+
+            int flag = 0;
+            ResultSet rs1 = preparedStatement1.executeQuery();
+            if (rs1.next() == false) {
+                System.out.println("There are no Professors in the database :(");
+            } else {
+                do {
+                    String data = rs1.getString("Name");
+                    if (data.equals(p.getName())) {
+                        flag = 1;
+                        break;
+                    }
+                } while (rs1.next());
+            }
+
+            if (flag == 1) {
+                ResultSet rs = preparedStatement.executeQuery();
+                System.out.println("\n-----------Courses offered by Prof." + p.getName() + "---------------\n");
+                while (rs.next()) {
+                    System.out.println(
+                            "Course Name = " + rs.getString("CourseName") + " ,Course_ID = "
+                                    + rs.getString("Course_ID"));
+                }
+            } else {
+                System.out.println("Given professor doesn't exist");
+            }
+
+        } catch (SQLException ex) {
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+    }
+
+    @Override
+    public void addPerformance(Professor p) {
         PreparedStatement preparedStatement = null;
         String sql;
         sql = "insert into Performance(Course_ID, Student_ID, Grade, Attendance) values (?,?,?,?)";
         PreparedStatement errStatement1 = null;
         String errSql1;
+        PreparedStatement errStatement2 = null;
+        String errSql2;
         PreparedStatement delStatement1 = null;
         String delSql1;
 
@@ -91,6 +145,12 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             errStatement1.setInt(2, Student_ID);
             ResultSet rs = errStatement1.executeQuery();
 
+            errSql2 = "select Course_ID, Professor_ID from Course where Course_ID = ? and Professor_ID = ?";
+            errStatement2 = dbConnection.prepareStatement(errSql2);
+            errStatement2.setInt(1, Course_ID);
+            errStatement2.setInt(2, p.getProfessortID());
+            ResultSet rs1 = errStatement2.executeQuery();
+
             preparedStatement.setInt(1, Course_ID);
             preparedStatement.setInt(2, Student_ID);
             preparedStatement.setString(3, Grade);
@@ -101,13 +161,17 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             delStatement1.setInt(1, Course_ID);
             delStatement1.setInt(2, Student_ID);
 
-            if (rs.next() == false) {
-                System.out.println(
-                        "The student with Student_ID " + Student_ID + " isn't enrolled to course " + Course_ID);
+            if (rs1.next() == false) {
+                System.out.println("You don't have permission to add performance for this course.");
             } else {
-                preparedStatement.executeUpdate();
-                System.out.println("Performance of " + Student_ID + " added to the Performance table");
-                delStatement1.executeUpdate();
+                if (rs.next() == false) {
+                    System.out.println(
+                            "The student with Student_ID " + Student_ID + " isn't enrolled to course " + Course_ID);
+                } else {
+                    preparedStatement.executeUpdate();
+                    System.out.println("Performance of " + Student_ID + " added to the Performance table");
+                    delStatement1.executeUpdate();
+                }
             }
 
         } catch (SQLException e) {

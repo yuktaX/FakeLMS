@@ -32,12 +32,9 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
                 sql = "select * from Professor where Professor_ID = " + id;
                 ResultSet rs = stmt.executeQuery(sql);
 
-                // STEP 5: Extract data from result set
                 while (rs.next()) {
                     // Retrieve by column name
                     int professorid = rs.getInt("Professor_ID");
-                    // if (studentid == null)
-                    // break;
                     String name = rs.getString("Name");
                     String email = rs.getString("Email");
                     p.setProfessor_ID(professorid);
@@ -68,7 +65,6 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
         PreparedStatement preparedStatement1 = null;
         try {
             Scanner scanner = new Scanner(System.in);
-            // stmt = dbConnection.createStatement();
             sql = "select Course_ID, CourseName from Course where Professor_ID =?";// enrollment
             sql1 = "select Name from Professor"; // query
 

@@ -1,5 +1,3 @@
-
-//STEP 1. Import required packages
 import java.util.Scanner;
 
 public class DAO_Demo {

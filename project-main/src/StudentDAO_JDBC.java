@@ -45,12 +45,9 @@ public class StudentDAO_JDBC implements StudentDAO {
 				sql = "select * from Student where STUDENT_ID = " + id;
 				ResultSet rs = stmt.executeQuery(sql);
 
-				// STEP 5: Extract data from result set
 				while (rs.next()) {
 					// Retrieve by column name
 					int studentid = rs.getInt("Student_ID");
-					// if (studentid == null)
-					// break;
 					String name = rs.getString("Name");
 					String email = rs.getString("Email");
 					String branch = rs.getString("Branch");

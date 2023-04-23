@@ -84,7 +84,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 		try {
 			stmt = dbConnection.createStatement();
 			sql = "select CourseName, Course_ID from Course where SemOfferedIn = " + s.getSem() + " and (Branch = '"
-					+ s.getBranch() + "' or Branch is NULL)";
+					+ s.getBranch() + "' or Branch is NULL or Branch = 'gen')";
 			ResultSet rs = stmt.executeQuery(sql);
 
 			System.out.println("\n-----------Your eligible courses are------------\n");
@@ -136,7 +136,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 		PreparedStatement preparedStatement = null;
 		sql = "insert into Enrollment(Course_ID, Student_ID) values (?, ?)";// enrollment query
 		sql_valid = "select CourseName from Course where CourseName in ( select CourseName from Course where SemOfferedIn = "
-				+ s.getSem() + " and (Branch = '" + s.getBranch() + "' or Branch is NULL))";// names of all eligible
+				+ s.getSem() + " and (Branch = '" + s.getBranch() + "' or Branch is NULL or Branch = 'gen'))";// names of all eligible
 																							// courses
 		try {
 			preparedStatement = dbConnection.prepareStatement(sql);

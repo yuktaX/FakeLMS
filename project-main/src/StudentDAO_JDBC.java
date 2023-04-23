@@ -136,8 +136,11 @@ public class StudentDAO_JDBC implements StudentDAO {
 		PreparedStatement preparedStatement = null;
 		sql = "insert into Enrollment(Course_ID, Student_ID) values (?, ?)";// enrollment query
 		sql_valid = "select CourseName from Course where CourseName in ( select CourseName from Course where SemOfferedIn = "
-				+ s.getSem() + " and (Branch = '" + s.getBranch() + "' or Branch is NULL or Branch = 'gen'))";// names of all eligible
-																							// courses
+				+ s.getSem() + " and (Branch = '" + s.getBranch() + "' or Branch is NULL or Branch = 'gen'))";// names
+																												// of
+																												// all
+																												// eligible
+		// courses
 		try {
 			preparedStatement = dbConnection.prepareStatement(sql);
 			stmt = dbConnection.createStatement();
@@ -199,22 +202,23 @@ public class StudentDAO_JDBC implements StudentDAO {
 		String sql, sql_valid;
 		int flg = 0;
 		PreparedStatement preparedStatement = null;
-		Statement stmt_valid = null;
+		PreparedStatement stmt_valid = null;
 		try {
 			Scanner scanner = new Scanner(System.in);
 			System.out.println("Enter course name: ");
 			String coursename = scanner.next();
 
-			stmt_valid = dbConnection.createStatement();
-			sql_valid = "select distinct c.CourseName from Course c, Enrollment e where e.Course_ID=c.Course_ID and e.Student_ID="
-					+ s.getStudentID();
-			ResultSet rs1 = stmt_valid.executeQuery(sql_valid);
+			sql_valid = "select distinct c.CourseName from Course c, Enrollment e where e.Course_ID=c.Course_ID and e.Student_ID=?";
+			stmt_valid = dbConnection.prepareStatement(sql_valid);
+			stmt_valid.setInt(1, s.getStudentID());
+			ResultSet rs1 = stmt_valid.executeQuery();
+
 			while (rs1.next()) {
 				if (rs1.getString("CourseName").equals(coursename)) {
 					flg = 1;
-					sql = "delete e from Enrollment e inner join Course c on e.Course_ID=c.Course_ID and c.CourseName='"
-							+ coursename + "'";// enrollment query
+					sql = "delete e from Enrollment e inner join Course c on e.Course_ID=c.Course_ID and c.CourseName=?";
 					preparedStatement = dbConnection.prepareStatement(sql);
+					preparedStatement.setString(1, coursename);
 					preparedStatement.executeUpdate();
 					System.out.println("Succesfully deleted " + coursename + " from your courses");
 					break;

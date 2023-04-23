@@ -26,12 +26,12 @@ public class DAO_Demo {
 					pass = scanner.next();
 					Student received = verifyStudentLogin(Student_ID, pass);
 					if (received != null) {
-						System.out.println("\nWelcome, " + received.getName() + "!\n");
+						System.out.println("\nWelcome, " + received.getName() + "!");
 						int choice = 0;
 
 						while (choice != 7) {
 							System.out.println(
-									"What would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)Unenroll from a course \n5)View Courses offered by a Professor \n6)View Grades/Transcript \n7)Logout\n \nEnter choice: ");
+									"\nWhat would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)Unenroll from a course \n5)View Courses offered by a Professor \n6)View Grades/Transcript \n7)Logout\n \nEnter choice: ");
 							choice = scanner.nextInt();
 							if (choice == 1) {
 								usecase1(received);

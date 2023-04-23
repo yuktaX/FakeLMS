@@ -261,7 +261,7 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             // scanner.close();
 
             stmt = dbConnection.createStatement();
-            sql = "select s.Student_ID, s.Name, s.CurrentSemester, s.Branch from Student s, Enrollment e, Course c  where s.Student_ID=e.Student_ID and c.CourseName= '"
+            sql = "select distinct s.Student_ID, s.Name, s.CurrentSemester, s.Branch from Student s, Enrollment e, Course c  where s.Student_ID=e.Student_ID and c.CourseName= '"
                     + courseName + "'";// enrollment query
             ResultSet rs = stmt.executeQuery(sql);
 

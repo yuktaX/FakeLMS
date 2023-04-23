@@ -126,20 +126,11 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
 
             System.out.println("Enter Course_ID:");
             Integer Course_ID = scanner.nextInt();
-            System.out.println("Enter Student_ID:");
-            Integer Student_ID = scanner.nextInt();
-            System.out.println("Enter Grade:");
-            String Grade = scanner.next();
-            System.out.println("Enter Attendance:");
-            Float Attendance = scanner.nextFloat();
 
             // scanner.close();
 
             errSql1 = "select Course_ID, Student_ID from Enrollment where Course_ID = ? and Student_ID = ?";
             errStatement1 = dbConnection.prepareStatement(errSql1);
-            errStatement1.setInt(1, Course_ID);
-            errStatement1.setInt(2, Student_ID);
-            ResultSet rs = errStatement1.executeQuery();
 
             errSql2 = "select Course_ID, Professor_ID from Course where Course_ID = ? and Professor_ID = ?";
             errStatement2 = dbConnection.prepareStatement(errSql2);
@@ -147,25 +138,35 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             errStatement2.setInt(2, p.getProfessortID());
             ResultSet rs1 = errStatement2.executeQuery();
 
-            preparedStatement.setInt(1, Course_ID);
-            preparedStatement.setInt(2, Student_ID);
-            preparedStatement.setString(3, Grade);
-            preparedStatement.setFloat(4, Attendance);
-
             delSql1 = "delete from Enrollment where Course_ID = ? and Student_ID = ?";
             delStatement1 = dbConnection.prepareStatement(delSql1);
-            delStatement1.setInt(1, Course_ID);
-            delStatement1.setInt(2, Student_ID);
 
             if (rs1.next() == false) {
                 System.out.println("You don't have permission to add performance for this course.");
             } else {
+                System.out.println("Enter Student_ID:");
+                Integer Student_ID = scanner.nextInt();
+                errStatement1.setInt(1, Course_ID);
+                errStatement1.setInt(2, Student_ID);
+                ResultSet rs = errStatement1.executeQuery();
                 if (rs.next() == false) {
                     System.out.println(
                             "The student with Student_ID " + Student_ID + " isn't enrolled to course " + Course_ID);
                 } else {
+                    System.out.println("Enter Grade:");
+                    String Grade = scanner.next();
+                    System.out.println("Enter Attendance:");
+                    Float Attendance = scanner.nextFloat();
+
+                    preparedStatement.setInt(1, Course_ID);
+                    preparedStatement.setInt(2, Student_ID);
+                    preparedStatement.setString(3, Grade);
+                    preparedStatement.setFloat(4, Attendance);
                     preparedStatement.executeUpdate();
+
                     System.out.println("Performance of " + Student_ID + " added to the Performance table");
+                    delStatement1.setInt(1, Course_ID);
+                    delStatement1.setInt(2, Student_ID);
                     delStatement1.executeUpdate();
                 }
             }

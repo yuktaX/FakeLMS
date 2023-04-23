@@ -11,7 +11,7 @@ public class DAO_Demo {
 
 			try {
 				Scanner scanner = new Scanner(System.in);
-				System.out.println("*********WELCOME TO FakeLMS*********\n");
+				System.out.println("\n*********WELCOME TO FakeLMS*********\n");
 				System.out.println("Whom would you like to log in as? \n 1)Student \n 2)Professor");
 				userlogin = scanner.nextInt();
 
@@ -31,7 +31,7 @@ public class DAO_Demo {
 
 						while (choice != 7) {
 							System.out.println(
-									"\nWhat would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)Unenroll from a course \n5)View Courses offered by a Professor \n6)View Grades/Transcript \n7)Logout\n \nEnter choice: ");
+									"What would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)Unenroll from a course \n5)View Courses offered by a Professor \n6)View Grades/Transcript \n7)Logout\n \nEnter choice: ");
 							choice = scanner.nextInt();
 							if (choice == 1) {
 								usecase1(received);

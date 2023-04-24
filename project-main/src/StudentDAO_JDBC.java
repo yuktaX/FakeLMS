@@ -206,7 +206,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 		try {
 			Scanner scanner = new Scanner(System.in);
 			System.out.println("Enter course name: ");
-			String coursename = scanner.next();
+			String coursename = scanner.nextLine();
 
 			sql_valid = "select distinct c.CourseName from Course c, Enrollment e where e.Course_ID=c.Course_ID and e.Student_ID=?";
 			stmt_valid = dbConnection.prepareStatement(sql_valid);

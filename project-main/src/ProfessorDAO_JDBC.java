@@ -204,7 +204,7 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             Integer Credits = scanner.nextInt();
             System.out.println("Enter type of course (core/elective):");
             String Type = scanner.next();
-            System.out.println("Enter Branch (NULL if not applicable):");
+            System.out.println("Enter Branch (\"gen\" for general courses):");
             String Branch = scanner.next();
 
             Integer Professor_ID = p.getProfessortID();
@@ -262,7 +262,7 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
             // scanner.close();
 
             stmt = dbConnection.createStatement();
-            sql = "select distinct s.Student_ID, s.Name, s.CurrentSemester, s.Branch from Student s, Enrollment e, Course c  where s.Student_ID=e.Student_ID and c.CourseName= '"
+            sql = "select distinct s.Student_ID, s.Name, s.CurrentSemester, s.Branch from Student s, Enrollment e, Course c  where s.Student_ID=e.Student_ID and c.Course_ID=e.Course_ID and c.CourseName='"
                     + courseName + "'";// enrollment query
             ResultSet rs = stmt.executeQuery(sql);
 

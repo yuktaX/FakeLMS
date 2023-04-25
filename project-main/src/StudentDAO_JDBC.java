@@ -135,12 +135,8 @@ public class StudentDAO_JDBC implements StudentDAO {
 		Statement stmt = null;
 		PreparedStatement preparedStatement = null;
 		sql = "insert into Enrollment(Course_ID, Student_ID) values (?, ?)";// enrollment query
-		sql_valid = "select CourseName from Course where CourseName in ( select CourseName from Course where SemOfferedIn = "
-				+ s.getSem() + " and (Branch = '" + s.getBranch() + "' or Branch is NULL or Branch = 'gen'))";// names
-																												// of
-																												// all
-																												// eligible
-		// courses
+		sql_valid = "select CourseName from Course where SemOfferedIn = "+ s.getSem() + " and (Branch = '" + s.getBranch() + "' or Branch is NULL or Branch = 'gen')";// names
+		// make sure student enrolls for eligible courses
 		try {
 			preparedStatement = dbConnection.prepareStatement(sql);
 			stmt = dbConnection.createStatement();
@@ -334,7 +330,8 @@ public class StudentDAO_JDBC implements StudentDAO {
 		PreparedStatement preparedStatement1 = null;
 		try {
 			Scanner scanner = new Scanner(System.in);
-			coursename = scanner.next();
+			System.out.println("Enter name of course whos TA's you want to contact: ");
+			coursename = scanner.nextLine();
 			sql = "select distinct c.CourseName from Course c, Enrollment e where e.Course_ID=c.Course_ID and e.Student_ID="
 					+ s.getStudentID();// only contact your course TA's
 
@@ -345,20 +342,19 @@ public class StudentDAO_JDBC implements StudentDAO {
 			while (rs1.next()) {
 				if (rs1.getString("CourseName").equals(coursename)) {
 					flag = 1;
-					sql_getTA = "select s.Name, s.Email from Student s, TA t, Course c where c.Course_ID = t.Course_ID and t.Student_ID = s.Student_ID and c.CourseName = ?";
+					sql_getTA = "select s.Name, s.Email from Student s, TA t, Course c where c.Course_ID = t.Course_ID and t.Student_ID = s.Student_ID and c.CourseName=?";
 					preparedStatement1 = dbConnection.prepareStatement(sql_getTA);
 					preparedStatement1.setString(1, coursename);
-					ResultSet rs = preparedStatement1.executeQuery(sql_getTA);
+					ResultSet rs = preparedStatement1.executeQuery();
 					System.out.println("--------------TA's for " + coursename + "-----------\n");
 					while (rs.next()) {
-						System.out
-								.println("Name of TA: " + rs.getString("Name") + " ,Email: " + rs.getString("Email\n"));
+						System.out.println("Name of TA: " + rs.getString("Name") + " ,Email: " + rs.getString("Email"));
 					}
 					break;
 				}
 			}
 			if (flag == 0)
-				System.out.println("This course does not exist.\n");
+				System.out.println("This course does not exist or you are not enrolled in it.\n");
 
 		} catch (SQLException ex) {
 			// handle any errors

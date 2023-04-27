@@ -83,7 +83,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 		Statement stmt = null;
 		try {
 			stmt = dbConnection.createStatement();
-			sql = "select CourseName, Course_ID from Course where SemOfferedIn = " + s.getSem() + " and (Branch = '"
+			sql = "select CourseName, Course_ID, Credits from Course where SemOfferedIn = " + s.getSem() + " and (Branch = '"
 					+ s.getBranch() + "' or Branch is NULL or Branch = 'gen')";
 			ResultSet rs = stmt.executeQuery(sql);
 
@@ -91,7 +91,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 
 			while (rs.next()) {
 				System.out.println(
-						"Course Name = " + rs.getString("CourseName") + " ,Course_ID = " + rs.getString("Course_ID"));
+						"Course Name = " + rs.getString("CourseName") + " ,Course_ID = " + rs.getInt("Course_ID") + " ,Credits = " + rs.getInt("Credits"));
 			}
 
 		} catch (SQLException ex) {

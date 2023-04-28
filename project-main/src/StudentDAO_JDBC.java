@@ -106,19 +106,39 @@ public class StudentDAO_JDBC implements StudentDAO {
 	@Override
 	public void viewMyCourses(Student s) {
 		String sql;
-		Statement stmt = null;
+		String sql2;
+		Statement stmt1 = null;
+		Statement stmt2 = null;
 		try {
 			int id = s.getStudentID();
-			stmt = dbConnection.createStatement();
+			stmt1 = dbConnection.createStatement();
 			sql = "select distinct c.Course_ID, c.CourseName from Course c, Enrollment e where e.Course_ID=c.Course_ID and e.Student_ID="
 					+ id;// enrollment query
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = stmt1.executeQuery(sql);
 
 			System.out.println("\n--------------------Your courses are------------------------\n");
 
 			while (rs.next()) {
 				System.out.println(
-						"Course Name = " + rs.getString("CourseName") + " ,Course_ID = " + rs.getString("Course_ID"));
+						"Course Name = " + rs.getString("CourseName") + " ,Course_ID = " + rs.getInt("Course_ID"));
+			}
+
+		} catch (SQLException ex) {
+			// handle any errors
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+
+		try {
+			int id2 = s.getStudentID();
+			stmt2 = dbConnection.createStatement();
+			sql2 = "select sum(Credits) from Course where Course_ID in (select Course_ID from Enrollment where Student_ID="
+					+ id2 +")";// enrollment query
+			ResultSet rs2 = stmt2.executeQuery(sql2);
+
+			while(rs2.next()){
+				System.out.println("Total Credits = "+rs2.getInt("sum(Credits)"));
 			}
 
 		} catch (SQLException ex) {
@@ -236,6 +256,8 @@ public class StudentDAO_JDBC implements StudentDAO {
 	public void getTranscript(Student s) {
 		String sql;
 		Statement stmt = null;
+
+
 		try {
 			int id = s.getStudentID();
 			stmt = dbConnection.createStatement();
@@ -245,6 +267,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 			ResultSet rs = stmt.executeQuery(sql);
 
 			System.out.println("\n----------Here is your transcript-----------\n");
+			System.out.println("Current Semester = "+s.getSem());
 
 			Integer totalCredits = 0;
 			Float gradePoints = (float) 0;
@@ -281,7 +304,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 			System.out.println("Enter Professor name: ");
 			String name = scanner.nextLine();
 			// stmt = dbConnection.createStatement();
-			sql = "select c.Course_ID, c.CourseName from Course c, Professor p where c.Professor_ID = p.Professor_ID and p.Name = ?";// enrollment
+			sql = "select c.Course_ID, c.CourseName, c.SemOfferedIn from Course c, Professor p where c.Professor_ID = p.Professor_ID and p.Name = ?";// enrollment
 			sql1 = "select Name from Professor"; // query
 
 			preparedStatement = dbConnection.prepareStatement(sql);
@@ -309,7 +332,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 				while (rs.next()) {
 					System.out.println(
 							"Course Name = " + rs.getString("CourseName") + " ,Course_ID = "
-									+ rs.getString("Course_ID"));
+									+ rs.getString("Course_ID") +",Semester ="+rs.getInt("SemOfferedIn"));
 				}
 			} else {
 				System.out.println("Given professor doesn't exist");

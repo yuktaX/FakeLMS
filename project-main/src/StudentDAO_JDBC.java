@@ -158,13 +158,17 @@ public class StudentDAO_JDBC implements StudentDAO {
 
 	@Override
 	public void EnrollForCourse(Student s) {
-		String sql, sql_valid;
+		String sql, sql_valid, sql_checkenrolled;
 		Statement stmt = null;
 		PreparedStatement preparedStatement = null;
+		PreparedStatement preparedStatement2 = null;
 		sql = "insert into Enrollment(Course_ID, Student_ID) values (?, ?)";// enrollment query
-		sql_valid = "select CourseName from Course where SemOfferedIn = "+ s.getSem() + " and (Branch = '" + s.getBranch() + "' or Branch is NULL or Branch = 'gen')";// names
+		sql_valid = "select CourseName from Course where SemOfferedIn = "+ s.getSem() + " and (Branch = '" + s.getBranch() + "' or Branch is NULL or Branch = 'gen')";//courses eligible
+		sql_checkenrolled = "select e.Course_ID, e.Student_Id, c.CourseName from Enrollment e, Course c where c.Course_ID = e.Course_ID and CourseName = ? and Student_Id = ?";
+		
 		// make sure student enrolls for eligible courses
 		try {
+			preparedStatement2 = dbConnection.prepareStatement(sql_checkenrolled);
 			preparedStatement = dbConnection.prepareStatement(sql);
 			stmt = dbConnection.createStatement();
 			Scanner scanner = new Scanner(System.in);
@@ -174,6 +178,16 @@ public class StudentDAO_JDBC implements StudentDAO {
 			int flg = 0;
 			System.out.println("Enter Course Name:");
 			coursename = scanner.nextLine();
+
+			preparedStatement2.setString(1, coursename);
+			preparedStatement2.setInt(2, s.getStudentID());
+			ResultSet rs2 = preparedStatement2.executeQuery();
+			while(rs2.next())
+			{
+				System.out.println("You are already enrolled in course: " + coursename);
+				return;
+			}
+			
 			ResultSet rs1 = stmt.executeQuery(sql_valid);
 			while (rs1.next()) {
 				if (rs1.getString("CourseName").equals(coursename)) {
@@ -198,7 +212,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 
 					preparedStatement.executeUpdate();
 
-					System.out.println("\n-----------Succesfully enrolled for course------------\n");
+					System.out.println("\n-----------Succesfully enrolled for course: " + coursename + "------------\n");
 
 					break;
 

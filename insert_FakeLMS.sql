@@ -60,3 +60,14 @@ values (1, 'password'),
 (5, 'password'),
 (6, 'password'),
 (7, 'password');
+
+insert into TA(Student_ID,Course_ID)
+values (10,3),
+(3,1),
+(2,7),
+(4,11),
+(5,3),
+(6,6),
+(7,8),
+(8,9),
+(9,10);

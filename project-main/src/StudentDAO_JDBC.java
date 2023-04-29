@@ -127,7 +127,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 
 			while (rs.next()) {
 				System.out.println(
-						"Course Name = " + rs.getString("CourseName") + " ,Course_ID = " + rs.getInt("Course_ID"));
+						"Course Name = " + rs.getString("CourseName") + "\nCourse_ID = " + rs.getInt("Course_ID")+"\n");
 			}
 
 		} catch (SQLException ex) {

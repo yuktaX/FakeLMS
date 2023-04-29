@@ -338,8 +338,8 @@ public class StudentDAO_JDBC implements StudentDAO {
 				System.out.println("\n-----------Courses offered by Prof." + name + "---------------\n");
 				while (rs.next()) {
 					System.out.println(
-							"Course Name = " + rs.getString("CourseName") + " ,Course_ID = "
-									+ rs.getString("Course_ID") +",Semester ="+rs.getInt("SemOfferedIn"));
+							"Course Name = " + rs.getString("CourseName") + "\nCourse_ID = "
+									+ rs.getString("Course_ID") +"\nSemester ="+rs.getInt("SemOfferedIn")+"\n");
 				}
 			} else {
 				System.out.println("Given professor doesn't exist");
@@ -378,7 +378,7 @@ public class StudentDAO_JDBC implements StudentDAO {
 					ResultSet rs = preparedStatement1.executeQuery();
 					System.out.println("--------------TA's for " + coursename + "-----------\n");
 					while (rs.next()) {
-						System.out.println("Name of TA: " + rs.getString("Name") + " ,Email: " + rs.getString("Email"));
+						System.out.println("Name of TA: " + rs.getString("Name") + "\nEmail: " + rs.getString("Email")+"\n");
 					}
 					break;
 				}

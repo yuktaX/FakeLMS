@@ -88,10 +88,17 @@ public class StudentDAO_JDBC implements StudentDAO {
 			ResultSet rs = stmt.executeQuery(sql);
 
 			System.out.println("\n-----------Your eligible courses are------------\n");
-
-			while (rs.next()) {
+			if (rs.next() == false) {
+				System.out.println("Not eligible for any courses.");
+				return;
+			}
+			else{
 				System.out.println(
-						"Course Name = " + rs.getString("CourseName") + " ,Course_ID = " + rs.getInt("Course_ID") + " ,Credits = " + rs.getInt("Credits"));
+							"Course Name = " + rs.getString("CourseName") + "\nCourse_ID = " + rs.getInt("Course_ID") + "\nCredits = " + rs.getInt("Credits")+" \n");
+				while (rs.next()) {
+					System.out.println(
+						"Course Name = " + rs.getString("CourseName") + "\nCourse_ID = " + rs.getInt("Course_ID") + "\nCredits = " + rs.getInt("Credits")+" \n");
+				}
 			}
 
 		} catch (SQLException ex) {

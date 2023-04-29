@@ -266,11 +266,15 @@ public class ProfessorDAO_JDBC implements ProfessorDAO {
                     + courseName + "'";// enrollment query
             ResultSet rs = stmt.executeQuery(sql);
 
-            while (rs.next()) {
-                System.out.println(
-                        "Student_ID = " + rs.getInt("Student_ID") + " ,StudentName = " + rs.getString("Name")
-                                + " ,CurrentSemester = " + rs.getInt("CurrentSemester") + " ,Branch = "
-                                + rs.getString("Branch"));
+            if (rs.next() == false) {
+                System.out.println("\nThere are no students enrolled to this course");
+            } else {
+                do {
+                    System.out.println(
+                            "\nStudent_ID = " + rs.getInt("Student_ID") + " ,StudentName = " + rs.getString("Name")
+                                    + " ,CurrentSemester = " + rs.getInt("CurrentSemester") + " ,Branch = "
+                                    + rs.getString("Branch"));
+                } while (rs.next());
             }
 
         } catch (SQLException ex) {

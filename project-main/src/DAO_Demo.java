@@ -29,9 +29,9 @@ public class DAO_Demo {
 						System.out.println("\nWelcome, " + received.getName() + "!");
 						int choice = 0;
 
-						while (choice != 7) {
+						while (choice != 8) {
 							System.out.println(
-									"\nWhat would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)Unenroll from a course \n5)View Courses offered by a Professor \n6)View Grades/Transcript \n7)Logout\n \nEnter choice: ");
+									"\nWhat would you like to do?\n1)View eligible courses to enroll \n2)View my courses \n3)Enroll for a course \n4)Unenroll from a course \n5)View Courses offered by a Professor \n6)View Grades/Transcript \n7)Contact a TA \n8)Logout\n \nEnter choice: ");
 							choice = scanner.nextInt();
 							if (choice == 1) {
 								usecase1(received);
@@ -45,7 +45,10 @@ public class DAO_Demo {
 								usecase4(received);
 							} else if (choice == 6) {
 								usecase5(received);
+							} else if (choice == 7) {
+								usecase11(received);
 							}
+
 						}
 
 					} else {
@@ -249,6 +252,19 @@ public class DAO_Demo {
 			daoFactory.activateConnection();
 			ProfessorDAO pdao = daoFactory.getProfessorDAO();
 			pdao.viewMyCourses(p);
+			daoFactory.deactivateConnection(DAO_Factory.TXN_STATUS.COMMIT);
+		} catch (Exception e) {
+			// End transaction boundary with failure
+			daoFactory.deactivateConnection(DAO_Factory.TXN_STATUS.ROLLBACK);
+			e.printStackTrace();
+		}
+	}
+
+	public static void usecase11(Student s) {
+		try {
+			daoFactory.activateConnection();
+			StudentDAO sdao = daoFactory.getStudentDAO();
+			sdao.ContactTA(s);
 			daoFactory.deactivateConnection(DAO_Factory.TXN_STATUS.COMMIT);
 		} catch (Exception e) {
 			// End transaction boundary with failure
